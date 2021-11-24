@@ -6,6 +6,7 @@ from pandas.core.base import SelectionMixin
 from tabulate import tabulate
 
 FONT = "Yu Gothic"
+
 # <div>Ícones feitos por <a href="https://www.flaticon.com/br/autores/dimitry-miroliubov" title="Dimitry Miroliubov">Dimitry Miroliubov</a> from <a href="https://www.flaticon.com/br/" title="Flaticon">www.flaticon.com</a></div>
 def invertSign(function):
     func = ""
@@ -238,9 +239,12 @@ def VB_VNB(dataframe, n_columns, n_rows):
 
 def removeM(dataframe, n_columns):
     aux = n_columns
-    for i in range(1,n_columns-1):
-        if(bool(re.match("a\d+",dataframe.iloc[:, i].name))):
-            dataframe = dataframe.drop([dataframe.iloc[:, i].name], axis=1)
+    columns_list = dataframe.columns.tolist()
+    for i in columns_list:
+        print(i)
+        if(bool(re.match("a\d+",i))):
+            print("Remove")
+            dataframe.drop([i], axis='columns', inplace=True)
             aux -=1
     return dataframe, aux
 
@@ -313,11 +317,11 @@ def calculateOptimumValue(dataframe, n_columns, n_rows, interaction):
 
 def doubtsFunc():
     messagebox.showinfo("Dúvidas", 
-    "Variáveis:\nDevem identificadas com a letra x e mais um número. Exemplo: x1\nFunção Objetivo:\nPode ser usado espaços em branco. Não pode ser usado sinais de maior, menor e igualdade.\nExemplo de Função Objetivo:\n-2x1 + x2 - 4x3 + 400")
+    "Variáveis:\nDevem identificadas com a letra x e mais um número. Exemplo: x1\nFunção Objetivo:\nSem usar espaços em branco. Não pode ser usado sinais de maior, menor e igualdade.\nExemplo de Função Objetivo:\n-2x1 + x2 - 4x3 + 400")
 
 def doubtsRests():
     messagebox.showinfo("Dúvidas", 
-    "Variáveis:\nDevem identificadas com a letra x e mais um número. Exemplo: x1\nExemplos Restrições:\n2x1 + x2 – x3 <= 10\nx1 + x2 + 2x3 >= 20\n2x1 + x2 + 3x3 = 60\n-2x1 - 2x2 – 6x3 ≤ 500\n2x1 + x2 + 2x3 ≥ 10")
+    "Variáveis:\nDevem identificadas com a letra x e mais um número. Exemplo: x1\nRestrições:\nSem usar espaços em branco.\nExemplos Restrições:\n2x1 + x2 – x3 <= 10\nx1 + x2 + 2x3 >= 20\n2x1 + x2 + 3x3 = 60\n-2x1 - 2x2 – 6x3 ≤ 500\n2x1 + x2 + 2x3 ≥ 10")
 
 def errorPopUp():
     messagebox.showerror("Error", "Função Objetivo ou Restrições inválidas!")
@@ -327,18 +331,16 @@ def calc():
     input_rest = textbox_rest.get("1.0",END)
     if(str(input_func.get()) == ""):
         error = True
-    elif (re.sub("((((\+|-|)( *)(\d*x\d+)( *)))*)((((\+|-|)( *)(\d+)( *)))*)", "", str(input_func.get())) != ""):
+    elif (re.sub("((((\+|-|)(\d*x\d+)))*)((((\+|-|)(\d+)))*)", "", str(input_func.get())) != ""):
         error = True
     input_rest = input_rest.split("\n")
     input_rest.pop()
 
     if (error != True and len(input_rest) != 0):
-        print("Error False")
-        print(len(input_rest))
         for x in range(len(input_rest)):
             if(str(input_rest[x]) == ""):
                 error == True
-            elif (re.sub("((((\+|-|)( *)(\d*x\d+)( *)))*)(>=|<=|≥|≤|=)( *)\d+", "", str(input_rest[x])) != ""):
+            elif (re.sub("((((\+|-|)(\d*x\d+)))*)(>=|<=|≥|≤|=)\d+", "", str(input_rest[x])) != ""):
                 error = True
     else:
         error = True
@@ -387,6 +389,7 @@ def calc():
         else:
             print("NOT M_Method")
             continuar = True
+
         if(continuar):
             if(M_Method):
                 print("Remove M")
@@ -400,9 +403,9 @@ def calc():
 
         # Mostrar Resultado
         tv1 = ttk.Treeview(result_canvas)
-        tv1.place(height=100,relwidth=1)
-        treescrolly = Scrollbar(result_canvas, orient="vertical", command=tv1.yview) # command means update the yaxis view of the widget
-        treescrollx = Scrollbar(result_canvas, orient="horizontal", command=tv1.xview)
+        tv1.place(height=150,relwidth=1)
+        treescrolly = Scrollbar(tv1, orient="vertical", command=tv1.yview) # command means update the yaxis view of the widget
+        treescrollx = Scrollbar(tv1, orient="horizontal", command=tv1.xview)
         tv1.configure(xscrollcommand=treescrollx.set, yscrollcommand=treescrolly.set)
         treescrollx.pack(side="bottom", fill="x") # make the scrollbar fill the x axis of the Treeview widget
         treescrolly.pack(side="right", fill="y")
@@ -416,6 +419,14 @@ def calc():
         for row in df_rows:
             tv1.insert("", "end", values=row)
 
+        Vnb = Label(result_canvas, text=f"VB:\n{VB_VNB(df, num_columns, num_rows)}").place(x = 150, rely = 0.5, anchor = CENTER)
+        # result_canvas.create_text(
+        # (0,100),
+        # text = f"VB:\n{VB_VNB(df, num_columns, num_rows)}",
+        # fill = "#393939",
+        # padx=10, pady=10,
+        # font = (FONT, int(12.0)))
+
         second_frame = Frame(result_canvas)
 
         result_canvas.create_window((0,0), window=second_frame, anchor="nw")
@@ -425,8 +436,8 @@ window = Tk()
 
 input_func = StringVar()
 window.title("Calculadora Simplex")
-icon = PhotoImage(file='calculadora.png')
-window.tk.call('wm', 'iconphoto', window._w, icon)
+ICON = PhotoImage(file='calculadora.png')
+window.tk.call('wm', 'iconphoto', window._w, ICON)
 window.geometry("460x590")
 window.configure(bg = "#D7D7D7")
 canvas = Canvas(
@@ -471,7 +482,6 @@ canvas.create_text(
     text = "Função Objetivo",
     fill = "#393939",
     font = (FONT, int(14.0)))
-
 
 canvas.create_text(
     150, 220,
