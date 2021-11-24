@@ -347,29 +347,6 @@ def calc():
     if error:
         errorPopUp()
     else:
-        result = Tk()
-        result.title("Resposta Calculadora Simplex")
-        result.geometry("500x400")
-
-        main_frame = Frame(result)
-        main_frame.pack(fill=BOTH, expand=1)
-
-        result_canvas = Canvas(
-                main_frame,
-                bg = "#D7D7D7",
-                height = 1000,
-                width = 460,
-                bd = 0,
-                highlightthickness = 0,
-                relief = "ridge")
-        result_canvas.pack(side=LEFT,fill=BOTH, expand=1)
-
-        result_scrollbar = ttk.Scrollbar(main_frame, orient=VERTICAL, command=result_canvas.yview)
-        result_scrollbar.pack(side=RIGHT,fill=Y)
-
-        result_canvas.configure(yscrollcommand=result_scrollbar.set)
-        result_canvas.bind('<Configure>', lambda e: result_canvas.configure(scrollregion=result_canvas.bbox("all")))
-
         # Formulas
         str_func, input_rest = adjustFunctions(input_func.get(),input_rest)
 
@@ -400,6 +377,46 @@ def calc():
             df = calculateOptimumValue(df, num_columns, num_rows, 1)
         print(tabulate(df, headers = 'keys', tablefmt = 'psql'))
         print(VB_VNB(df, num_columns, num_rows))
+        valorZ = 0
+        Vb = VB_VNB(df, num_columns, num_rows)
+        aux = VB_VNB(df, num_columns, num_rows)
+        Vnb = {}
+        
+        for x in aux:
+            if(Vb[x] == 0):
+                Vnb[x] = Vb.pop(x)
+        
+        #Vb = '\n'.join(map(str,Vb))
+        Vb = '\n'.join('{} : {}'.format(key, value) for key, value in Vb.items())
+        Vnb = '\n'.join('{} : {}'.format(key, value) for key, value in Vnb.items())
+
+        # Tela
+        result = Tk()
+        result.title("Resposta Calculadora Simplex")
+        result.geometry("500x400")
+
+        main_frame = Frame(result)
+        main_frame.pack(fill=BOTH, expand=1)
+
+        result_canvas = Canvas(
+                main_frame,
+                bg = "#D7D7D7",
+                height = 1000,
+                width = 460,
+                bd = 0,
+                highlightthickness = 0,
+                relief = "ridge")
+        result_canvas.pack(side=LEFT,fill=BOTH, expand=1)
+
+        Label(result_canvas, text=f"VB:\n{Vb}").place(x = 100,y = 200, anchor = CENTER)
+        Label(result_canvas, text=f"VNB:\n{Vb}").place(x = 250,y = 200, anchor = CENTER)
+        Label(result_canvas, text=f"Valor de Z:\n{valorZ}").place(x = 250,y = 200, anchor = CENTER)
+
+        # result_scrollbar = ttk.Scrollbar(main_frame, orient=VERTICAL, command=result_canvas.yview)
+        # result_scrollbar.pack(side=RIGHT,fill=Y)
+
+        # result_canvas.configure(yscrollcommand=result_scrollbar.set)
+        # result_canvas.bind('<Configure>', lambda e: result_canvas.configure(scrollregion=result_canvas.bbox("all")))
 
         # Mostrar Resultado
         tv1 = ttk.Treeview(result_canvas)
@@ -419,7 +436,6 @@ def calc():
         for row in df_rows:
             tv1.insert("", "end", values=row)
 
-        Vnb = Label(result_canvas, text=f"VB:\n{VB_VNB(df, num_columns, num_rows)}").place(x = 150, rely = 0.5, anchor = CENTER)
         # result_canvas.create_text(
         # (0,100),
         # text = f"VB:\n{VB_VNB(df, num_columns, num_rows)}",
