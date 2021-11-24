@@ -1,6 +1,5 @@
 from tkinter import *
 from tkinter import messagebox
-import tkinter.ttk
 import re
 
 FONT = "Yu Gothic"
@@ -58,7 +57,6 @@ input_func = StringVar()
 window.title("Calculadora Simplex")
 window.geometry("460x590")
 window.configure(bg = "#D7D7D7")
-frame = Frame(window)
 canvas = Canvas(
     window,
     bg = "#D7D7D7",
@@ -80,16 +78,12 @@ canvas.create_line(20, 468, 440, 468, width=2, fill='#393939')
 calcButton = Button(window, text="Calcular", width=27, command=calc, fg="#D7D7D7", bg="#393939", font=(FONT, 14), activebackground="#D7D7D7", activeforeground="#393939")
 calcButton.place(x=55, y=485)
 
-photo = PhotoImage(file = "question-circle3.png")
+photo = PhotoImage(file = "question-circle.png")
 
-style = tkinter.ttk.Style()
-style.configure('TButton', border=0,
-borderwidth=0, focusthickness=0, focuscolor='none')
-frame.place(x=178, y=89)
-questionButton1 = tkinter.ttk.Button(window, image = photo, style="TButton", command=doubts)
+questionButton1 = Button(window, image = photo, border=0, background="#d7d7d7", activebackground="#d7d7d7", command=doubts)
 questionButton1.place(x=178, y=89)
 
-questionButton2 = tkinter.ttk.Button(window, image = photo, style="TButton", command=doubts)
+questionButton2 = Button(window, image = photo, border=0, background="#d7d7d7", activebackground="#d7d7d7", command=doubts)
 questionButton2.place(x=130, y=195)
 
 canvas.create_line(20, 537, 440, 537, width=2, fill='#393939')
