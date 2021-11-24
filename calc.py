@@ -1,7 +1,6 @@
 from tkinter import *
-from tkinter import font
+from tkinter import messagebox
 import tkinter.ttk
-from PIL import Image, ImageTk
 import re
 
 FONT = "Yu Gothic"
@@ -25,29 +24,44 @@ def doubts():
 
     window2.mainloop()
 
+def errorPopUp():
+    messagebox.showerror("Error", "Função Objetivo ou Restrições inválidas!")
+
 def calc():
     error = False
     input_rest = textbox_rest.get("1.0",END)
-    if (re.sub("((\d*x\d+|x\d+)(\+|\-))*(\d+)", "", str(input_func.get())) == ""):
+    if(str(input_func.get()) == ""):
         error = True
-        print('Yes')
-    print(f"{input_func.get()}")
-    input_rest = input_rest.split()
+    elif (re.sub("((((\+|-|)( *)(\d*x\d+)( *)))*)((((\+|-|)( *)(\d+)( *)))*)", "", str(input_func.get())) != ""):
+        error = True
+    input_rest = input_rest.split("\n")
+    input_rest.pop()
 
-    for x in range(len(input_rest)):
-        if error == True:
-            break
-        if (re.sub("((\d*x\d+|x\d+)(\+|\-))*(\d+)", "", str(input_rest[x])) != ""):
-            error = True
-
+    if (error != True and len(input_rest) != 0):
+        print("Error False")
+        print(len(input_rest))
+        for x in range(len(input_rest)):
+            if(str(input_rest[x]) == ""):
+                error == True
+            elif (re.sub("((((\+|-|)( *)(\d*x\d+)( *)))*)(>=|<=|≥|≤|=)( *)\d+", "", str(input_rest[x])) != ""):
+                error = True
+    else:
+        error = True
+    if error:
+        errorPopUp()
+    else:
+        pass
+    
 window = Tk()
+
 input_func = StringVar()
 window.title("Calculadora Simplex")
 window.geometry("460x590")
-window.configure(bg = "#ffffff")
+window.configure(bg = "#D7D7D7")
+frame = Frame(window)
 canvas = Canvas(
     window,
-    bg = "#ffffff",
+    bg = "#D7D7D7",
     height = 1000,
     width = 460,
     bd = 0,
@@ -58,20 +72,20 @@ canvas.place(x = 0, y = 0)
 canvas.create_rectangle(0, 0, 460, 70,
     outline="#393939", fill="#393939")
 
-canvas.create_rectangle(0, 70, 460, 1000,
-    outline="#D7D7D7", fill="#D7D7D7")
+#canvas.create_rectangle(0, 70, 460, 1000,
+#    outline="#D7D7D7", fill="#D7D7D7")
 
 canvas.create_line(20, 468, 440, 468, width=2, fill='#393939')
 
 calcButton = Button(window, text="Calcular", width=27, command=calc, fg="#D7D7D7", bg="#393939", font=(FONT, 14), activebackground="#D7D7D7", activeforeground="#393939")
-calcButton.place(x=75, y=480)
+calcButton.place(x=55, y=485)
 
-photo = PhotoImage(file = r"question-circle.png")
+photo = PhotoImage(file = "question-circle3.png")
 
 style = tkinter.ttk.Style()
-style.configure('TButton',
+style.configure('TButton', border=0,
 borderwidth=0, focusthickness=0, focuscolor='none')
-
+frame.place(x=178, y=89)
 questionButton1 = tkinter.ttk.Button(window, image = photo, style="TButton", command=doubts)
 questionButton1.place(x=178, y=89)
 
@@ -106,8 +120,6 @@ canvas.create_text(
     font = (FONT, int(12.0)))
 
 textbox_func = Entry(window, textvariable=input_func, bg="#CBC9C9", fg="#393939", font=(FONT, 10)).place(x=20, y=129, width=420,height=45)
-#textbox_func = Text(window, bg="#CBC9C9", fg="#393939", font=(FONT, 12))
-#textbox_func.place(x=20, y=129, width=420,height=45)
 
 textbox_rest = Text(window, bg="#CBC9C9", fg="#393939", font=(FONT, 12))
 textbox_rest.place(x=20, y=267, width=420,height=175)
