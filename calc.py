@@ -494,10 +494,10 @@ calcButton.place(x=55, y=485)
 photo = PhotoImage(file = "question-circle.png")
 
 questionButton1 = Button(window, image = photo, border=0, background="#d7d7d7", activebackground="#d7d7d7", command=doubtsFunc)
-questionButton1.place(x=178, y=89)
+questionButton1.place(x=178, y=91)
 
 questionButton2 = Button(window, image = photo, border=0, background="#d7d7d7", activebackground="#d7d7d7", command=doubtsRests)
-questionButton2.place(x=130, y=195)
+questionButton2.place(x=123, y=199)
 
 canvas.create_line(20, 537, 440, 537, width=2, fill='#393939')
 
