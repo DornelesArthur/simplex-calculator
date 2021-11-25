@@ -359,7 +359,7 @@ def calc():
                 M_Method = True
 
         print(tabulate(df, headers = 'keys', tablefmt = 'psql'))
-
+        resposta = 2
         if (M_Method):
             print("M_Method")
             df, continuar = calculateWithM(df, num_columns, num_rows,1)
@@ -375,9 +375,20 @@ def calc():
             print("Calcular Valor Otimo")
             # Calcular valor otimo
             df = calculateOptimumValue(df, num_columns, num_rows, 1)
+        elif(M_Method):
+            print("Undefined Solution")
+            resposta = 0
+
         print(tabulate(df, headers = 'keys', tablefmt = 'psql'))
         print(VB_VNB(df, num_columns, num_rows))
-        valorZ = 0
+        print(f"Resposta: {resposta}")
+        if resposta == 2:
+            df_head = df.head(1)
+            for x in df.head(1):
+                if df_head[x].values[0] < 0:
+                    resposta = 1
+
+        valorZ = df['b']['Z']
         Vb = VB_VNB(df, num_columns, num_rows)
         aux = VB_VNB(df, num_columns, num_rows)
         Vnb = {}
@@ -387,8 +398,8 @@ def calc():
                 Vnb[x] = Vb.pop(x)
         
         #Vb = '\n'.join(map(str,Vb))
-        Vb = '\n'.join('{} : {}'.format(key, value) for key, value in Vb.items())
-        Vnb = '\n'.join('{} : {}'.format(key, value) for key, value in Vnb.items())
+        Vb = '\n'.join('{} : {}'.format(key, round(value, 2)) for key, value in Vb.items())
+        Vnb = '\n'.join('{} : {}'.format(key, round(value, 2)) for key, value in Vnb.items())
 
         # Tela
         result = Tk()
@@ -410,7 +421,17 @@ def calc():
 
         Label(result_canvas, text=f"VB:\n{Vb}").place(x = 100,y = 200, anchor = CENTER)
         Label(result_canvas, text=f"VNB:\n{Vb}").place(x = 250,y = 200, anchor = CENTER)
-        Label(result_canvas, text=f"Valor de Z:\n{valorZ}").place(x = 250,y = 200, anchor = CENTER)
+        resposta_str = None
+        if(resposta == 2):
+            resposta_str = f"Valor de Z:\n{valorZ}\nSolução Ótima"
+        else:
+            resposta_str = f"Valor de Z:\n{valorZ}\nSolução Não Ótima\n"
+            if (resposta == 0):
+                resposta_str += f"Indefinido"
+            elif (resposta == 1):
+                resposta_str += f"Sem Solução"
+
+        Label(result_canvas, text=resposta_str).place(x = 400,y = 200, anchor = CENTER)
 
         # result_scrollbar = ttk.Scrollbar(main_frame, orient=VERTICAL, command=result_canvas.yview)
         # result_scrollbar.pack(side=RIGHT,fill=Y)
@@ -435,13 +456,6 @@ def calc():
         df_rows = df.to_numpy().tolist()
         for row in df_rows:
             tv1.insert("", "end", values=row)
-
-        # result_canvas.create_text(
-        # (0,100),
-        # text = f"VB:\n{VB_VNB(df, num_columns, num_rows)}",
-        # fill = "#393939",
-        # padx=10, pady=10,
-        # font = (FONT, int(12.0)))
 
         second_frame = Frame(result_canvas)
 
@@ -511,7 +525,7 @@ canvas.create_text(
     fill = "#393939",
     font = (FONT, int(12.0)))
 
-textbox_func = Entry(window, textvariable=input_func, bg="#CBC9C9", fg="#393939", font=(FONT, 10)).place(x=20, y=129, width=420,height=45)
+textbox_func = Entry(window, textvariable=input_func, bg="#CBC9C9", fg="#393939", font=(FONT, 12)).place(x=20, y=129, width=420,height=45)
 
 textbox_rest = Text(window, bg="#CBC9C9", fg="#393939", font=(FONT, 12))
 textbox_rest.place(x=20, y=267, width=420,height=175)
