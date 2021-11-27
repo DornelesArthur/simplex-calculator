@@ -419,19 +419,22 @@ def calc():
                 relief = "ridge")
         result_canvas.pack(side=LEFT,fill=BOTH, expand=1)
 
-        Label(result_canvas, text=f"VB:\n{Vb}").place(x = 100,y = 200, anchor = CENTER)
-        Label(result_canvas, text=f"VNB:\n{Vb}").place(x = 250,y = 200, anchor = CENTER)
+        VB_label = Label(result_canvas, bg="#D7D7D7", fg="#393939", text=f"VB:\n{Vb}")
+        VB_label.place(x = 100,y = 200, anchor = CENTER)
+        VNB_label = Label(result_canvas, bg="#D7D7D7", fg="#393939", text=f"VNB:\n{Vb}")
+        VNB_label.place(x = 250,y = 200, anchor = CENTER)
         resposta_str = None
         if(resposta == 2):
-            resposta_str = f"Valor de Z:\n{valorZ}\nSolução Ótima"
+            resposta_str = f"Valor de Z:\n{round(valorZ, 2)}\nSolução Ótima"
         else:
-            resposta_str = f"Valor de Z:\n{valorZ}\nSolução Não Ótima\n"
+            resposta_str = f"Valor de Z:\n{round(valorZ, 2)}\nSolução Não Ótima\n"
             if (resposta == 0):
                 resposta_str += f"Indefinido"
             elif (resposta == 1):
                 resposta_str += f"Sem Solução"
 
-        Label(result_canvas, text=resposta_str).place(x = 400,y = 200, anchor = CENTER)
+        result_label = Label(result_canvas, bg="#D7D7D7", fg="#393939", text=resposta_str)
+        result_label.place(x = 400,y = 200, anchor = CENTER)
 
         # result_scrollbar = ttk.Scrollbar(main_frame, orient=VERTICAL, command=result_canvas.yview)
         # result_scrollbar.pack(side=RIGHT,fill=Y)
@@ -483,13 +486,10 @@ canvas.place(x = 0, y = 0)
 canvas.create_rectangle(0, 0, 460, 70,
     outline="#393939", fill="#393939")
 
-#canvas.create_rectangle(0, 70, 460, 1000,
-#    outline="#D7D7D7", fill="#D7D7D7")
-
 canvas.create_line(20, 468, 440, 468, width=2, fill='#393939')
 
 calcButton = Button(window, text="Calcular", width=27, command=calc, fg="#D7D7D7", bg="#393939", font=(FONT, 14), activebackground="#D7D7D7", activeforeground="#393939")
-calcButton.place(x=55, y=485)
+calcButton.place(x=75, y=480)
 
 photo = PhotoImage(file = "question-circle.png")
 
@@ -497,7 +497,7 @@ questionButton1 = Button(window, image = photo, border=0, background="#d7d7d7", 
 questionButton1.place(x=178, y=91)
 
 questionButton2 = Button(window, image = photo, border=0, background="#d7d7d7", activebackground="#d7d7d7", command=doubtsRests)
-questionButton2.place(x=123, y=199)
+questionButton2.place(x=130, y=199)
 
 canvas.create_line(20, 537, 440, 537, width=2, fill='#393939')
 
